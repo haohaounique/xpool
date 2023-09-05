@@ -24,7 +24,6 @@ import java.util.Map;
 @Slf4j
 public class DBThreadPoolInit implements ImportBeanDefinitionRegistrar, EnvironmentAware {
 
-
     private Environment environment;
 
     @Override
@@ -63,6 +62,7 @@ public class DBThreadPoolInit implements ImportBeanDefinitionRegistrar, Environm
     }
 
     public List<ConfigThread> loadDataFromDB(Environment environment) {
+
         List<ConfigThread> list = new ArrayList<>();
         try {
             //加载mysql驱动
@@ -72,9 +72,9 @@ public class DBThreadPoolInit implements ImportBeanDefinitionRegistrar, Environm
             //编写sql语句
             String sql = "select id,bean_name,core_pool_size,max_pool_size,keep_alive_seconds,queue_capacity,rejected_execution_handler,thread_group_name,v_json from config_thread ";
             //创建Statement
-            Statement statement = conn.createStatement();
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet r = statement.executeQuery();
             //执行sql语句
-            ResultSet r = statement.executeQuery(sql);
             while (r.next()) {
                 ConfigThread thread = new ConfigThread();
                 thread.setId(r.getInt("id"));
